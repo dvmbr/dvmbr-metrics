@@ -1,17 +1,16 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# dvmbr-metrics
+
+A portfolio-grade SaaS analytics admin dashboard (MRR/ARR, subscribers, churn, revenue, customer management, reporting) for a fictional productivity platform. Bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+See [docs/](./docs/README.md) for architecture, data model, API spec, component hierarchy, and the build roadmap.
 
 ## Getting Started
 
-First, run the development server:
+This project uses [pnpm](https://pnpm.io).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

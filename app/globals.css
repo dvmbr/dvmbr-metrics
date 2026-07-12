@@ -1,26 +1,116 @@
 @import "tailwindcss";
 
+/* Dark mode is the default (dark-first). Overridden by .light — see docs/design-system.md */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand hue is locked here and never redeclared in .light — both themes
+     literally reference this same value, not just a visually-close one.
+     Only lightness/chroma vary per theme (see --primary-l/-c etc. below). */
+  --primary-h: 27;
+  --secondary-h: 148.732;
+
+  --background: #141312;
+  --surface: #1b1a18;
+  --card: #201f1d;
+  --elevated: #2a2826;
+  --border: #383532;
+  --divider: #262421;
+
+  --foreground: #f3f1ee;
+  --foreground-secondary: #b7b2ac;
+  --muted-foreground: #837e78;
+
+  --primary-l: 65%;
+  --primary-c: 0.236;
+  --primary: oklch(var(--primary-l) var(--primary-c) var(--primary-h));
+  --primary-foreground: #14100f;
+
+  --secondary-l: 88%;
+  --secondary-c: 0.232;
+  --secondary: oklch(var(--secondary-l) var(--secondary-c) var(--secondary-h));
+  --secondary-foreground: #0d1210;
+
+  --success: var(--secondary);
+  --success-foreground: var(--secondary-foreground);
+
+  --warning: #e8a93d;
+  --warning-foreground: #241b08;
+  --destructive: #d3232d;
+  --destructive-foreground: #ffffff;
+
+  --ring: var(--secondary);
+
+  --overlay-hover: rgba(255, 255, 255, 0.06);
+  --overlay-active: rgba(255, 255, 255, 0.12);
+}
+
+.light {
+  --background: #faf8f6;
+  --surface: #f4f1ed;
+  --card: #ffffff;
+  --elevated: #ffffff;
+  --border: #e3ded8;
+  --divider: #ece8e3;
+
+  --foreground: #201d1b;
+  --foreground-secondary: #5c5650;
+  --muted-foreground: #8c857d;
+
+  /* --primary-h / --secondary-h are NOT redeclared here — they fall through
+     to :root, guaranteeing identical hue. Only L/C are recalibrated. */
+  --primary-l: 58.2%;
+  --primary-c: 0.237;
+  --primary: oklch(var(--primary-l) var(--primary-c) var(--primary-h));
+  --primary-foreground: #ffffff;
+
+  --secondary-l: 53.5%;
+  --secondary-c: 0.152;
+  --secondary: oklch(var(--secondary-l) var(--secondary-c) var(--secondary-h));
+  --secondary-foreground: #ffffff;
+
+  --success: var(--secondary);
+  --success-foreground: var(--secondary-foreground);
+
+  --warning: #a9720a;
+  --warning-foreground: #ffffff;
+  --destructive: #c81e2c;
+  --destructive-foreground: #ffffff;
+
+  --ring: var(--secondary);
+
+  --overlay-hover: rgba(0, 0, 0, 0.04);
+  --overlay-active: rgba(0, 0, 0, 0.08);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-elevated: var(--elevated);
+  --color-border: var(--border);
+  --color-divider: var(--divider);
+
   --color-foreground: var(--foreground);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-ring: var(--ring);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
