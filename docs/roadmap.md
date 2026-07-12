@@ -15,9 +15,10 @@ Build P0 pages **fully vertical** (UI → API → DB) one at a time, not all UIs
 ### Phase 1 — Foundation
 
 - [x] `create-next-app` (TS, App Router, Tailwind)
-- [ ] Install `@radix-ui/react-*` primitives as needed; build a neutral base `ui/` layer on top with Tailwind (Button, Dialog, DropdownMenu, Tabs, Tooltip, Select)
-- [ ] Configure dark mode via `next-themes`
-- [ ] Set up the folder structure ([architecture.md](./architecture.md#folder-structure))
+- [x] Dark-first design system: CSS custom properties + Tailwind v4 `@theme inline`, locked-hue neon brand colors (see [design-system.md](./design-system.md)) — token layer done, runtime toggle still pending (see next item)
+- [x] Set up the folder structure ([architecture.md](./architecture.md#folder-structure))
+- [ ] `ui/` primitives on Radix, built as needed: [x] `cn()` util, [x] `Button` — [ ] `Tooltip`, [ ] `DropdownMenu`, [ ] `Select`, [ ] `Tabs`, [ ] `Dialog` still pending
+- [x] Configure dark mode via `next-themes` — `ThemeProvider` + `ThemeToggle` wired up, dark-first (`defaultTheme="dark"`, `enableSystem={false}`), verified via a real click (not just class injection): `<html>` swaps `dark`↔`light`, body background swaps `#141312`↔`#FAF8F6`, zero hydration warnings
 - [ ] Build `Sidebar` + `Header` + root `(dashboard)/layout.tsx` with static nav — no data yet
 - [ ] Responsive drawer working on mobile
 

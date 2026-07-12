@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-background font-sans">
       <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-background sm:items-start">
-        {/* TEMPORARY: Button smoke test — remove once Sidebar/Header layout replaces this page */}
+        {/* TEMPORARY: Button/theme smoke test — remove once Sidebar/Header layout replaces this page */}
         <div className="flex flex-wrap items-center gap-3">
           <Button>Default</Button>
           <Button variant="outline">Outline</Button>
@@ -17,6 +18,7 @@ export default function Home() {
           <Button asChild>
             <a href="https://nextjs.org">As child (link)</a>
           </Button>
+          <ThemeToggle />
         </div>
         <Image
           className="dark:invert"
