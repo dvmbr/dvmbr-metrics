@@ -15,14 +15,16 @@ Build P0 pages **fully vertical** (UI → API → DB) one at a time, not all UIs
 ### Phase 1 — Foundation
 
 - [x] `create-next-app` (TS, App Router, Tailwind)
-- [x] Dark-first design system: CSS custom properties + Tailwind v4 `@theme inline`, locked-hue neon brand colors (see [design-system.md](./design-system.md)) — token layer done, runtime toggle still pending (see next item)
+- [x] Dark-first design system: CSS custom properties + Tailwind v4 `@theme inline`, locked-hue neon brand colors (see [design-system.md](./design-system.md))
 - [x] Set up the folder structure ([architecture.md](./architecture.md#folder-structure))
-- [ ] `ui/` primitives on Radix, built as needed: [x] `cn()` util, [x] `Button` — [ ] `Tooltip`, [ ] `DropdownMenu`, [ ] `Select`, [ ] `Tabs`, [ ] `Dialog` still pending
-- [x] Configure dark mode via `next-themes` — `ThemeProvider` + `ThemeToggle` wired up, dark-first (`defaultTheme="dark"`, `enableSystem={false}`), verified via a real click (not just class injection): `<html>` swaps `dark`↔`light`, body background swaps `#141312`↔`#FAF8F6`, zero hydration warnings
-- [ ] Build `Sidebar` + `Header` + root `(dashboard)/layout.tsx` with static nav — no data yet
-- [ ] Responsive drawer working on mobile
+- [ ] `ui/` primitives on Radix, built as needed: [x] `cn()`, [x] `Button`, [x] `Dialog` (doubles as the mobile drawer's Sheet via a `side` prop), [x] `DropdownMenu` — [ ] `Tooltip`, [ ] `Select`, [ ] `Tabs` still pending (build when a page actually needs them)
+- [x] Configure dark mode via `next-themes` — `ThemeProvider` + `ThemeToggle` wired up, dark-first (`defaultTheme="dark"`, `enableSystem={false}`), verified via a real click: `<html>` swaps `dark`↔`light`, body background swaps `#141312`↔`#FAF8F6`, zero hydration warnings
+- [x] Build `Sidebar` + `Header` + root `(dashboard)/layout.tsx` with static nav — all 6 routes scaffolded with placeholder pages, root `/` redirects to `/overview`, active-nav state and header page-title both derive from `next/navigation`'s pathname off the single `navItems` source of truth
+- [x] Responsive drawer working on mobile — `MobileDrawer` (Dialog `side="left"`) mirrors `Sidebar`, closes automatically on navigation
 
-**Exit criteria:** shell renders correctly in light/dark and at mobile width, with no data wired up.
+**Exit criteria:** shell renders correctly in light/dark and at mobile width, with no data wired up. ✅ Met — verified end-to-end with Playwright at desktop (1280px, sidebar visible) and mobile (375px, hamburger + drawer) viewports, both theme states, dropdown interactions, and cross-page navigation; zero console errors.
+
+**Note:** hit one real bug along the way — `Sidebar` was a Server Component passing `navItems` (which include Lucide icon *components*, i.e. functions) as props into the client `NavLink`, and React can't serialize functions across the server→client boundary. Fixed by making `Sidebar` a Client Component too, since the nav is inherently interactive (active-state depends on client-side pathname) anyway.
 
 ### Phase 2 — Static UI with mock data
 
