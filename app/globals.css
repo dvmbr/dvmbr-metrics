@@ -81,6 +81,32 @@
   --overlay-active: rgba(0, 0, 0, 0.08);
 }
 
+/* Motion language — see docs/motion.md. Theme-independent (same in light/dark),
+   so these are plain design tokens, not :root/.light-switched values. Named
+   distinctly from Tailwind's built-in ease-in/ease-out so there's no ambiguity
+   about which curve is in play. */
+@theme {
+  --duration-instant: 80ms;
+  --duration-fast: 150ms;
+  --duration-normal: 220ms;
+  --duration-slow: 320ms;
+
+  /* "Ease Out": the general-purpose default for plain state changes. */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  /* "Gentle Spring": smooth deceleration, no overshoot — for anything meant to
+     feel alive/arriving (entrances, the Spatial Phase sequence below). Not a
+     literal physics spring (those overshoot); this is the no-overshoot
+     approximation the brief explicitly asks for. */
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+
+  /* Total timing for the Spatial Phase signature sequence (Phase 10% + Pulse
+     50% + Afterimage/Settle 40% of this duration — see the two @keyframes
+     below and docs/motion.md). Fixed and shared so every component using the
+     sequence stays perceptibly identical, not hand-typed per component. */
+  --duration-spatial-phase: 280ms;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
@@ -113,4 +139,69 @@
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Spatial Phase — the signature interaction sequence. See docs/motion.md for
+   full rationale. Plain top-level @keyframes (not routed through @theme),
+   referenced via Tailwind's arbitrary animate-[...] syntax — custom @theme
+   keys aren't reliably picked up as utility-generating namespaces (proven
+   with duration-*), so this sidesteps that question entirely.
+
+   Two synchronized animations sharing one --duration-spatial-phase timeline:
+   `spatial-phase` runs on the interactive element itself (Phase's opacity/
+   blur dip, Afterimage's residual skew, Settle), `energy-pulse` runs on a
+   `before:` pseudo-element (the traveling energy band). Percentages line up:
+   both hold at rest through 0-10% (Phase), the pulse travels 10-60% (Pulse/
+   Shift), and the element's own residual distortion happens 60-100%
+   (Afterimage/Settle) — after the pulse has already exited. */
+@keyframes spatial-phase {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+  10% {
+    /* Phase: brief loss of spatial definition — opacity/blur only, no scale. */
+    opacity: 0.97;
+    filter: blur(1px);
+  }
+  25% {
+    /* Shift: state has caught up, clarity returns — synced with the pulse
+       still mid-flight. */
+    opacity: 1;
+    filter: blur(0);
+  }
+  60% {
+    transform: none;
+  }
+  75% {
+    /* Afterimage: not glow/shadow/blur/bloom/trail (explicitly excluded) —
+       interpreted instead as a residual *geometric* distortion, a barely-
+       perceptible skew, since that's the one category of effect the brief's
+       exclusion list doesn't cover. Uses `transform`, not `scale`/`translate`,
+       so it never fights the press (`active:scale-*`) or the pulse band's own
+       `translate` — three independent transform-family properties. */
+    transform: skewX(0.3deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* Named energy-pulse, not pulse — Tailwind v4 ships its own built-in
+   @keyframes pulse (the animate-pulse loading-skeleton shimmer). CSS doesn't
+   merge two same-named @keyframes, the later one in the stylesheet just wins
+   outright — Tailwind's silently overrode this one until caught by sampling
+   computed styles and finding the band simply never moved. */
+@keyframes energy-pulse {
+  0%,
+  10% {
+    translate: -100% 0;
+  }
+  60% {
+    translate: 300% 0;
+  }
+  100% {
+    translate: 300% 0;
+  }
 }

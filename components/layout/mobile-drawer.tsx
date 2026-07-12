@@ -2,15 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Activity, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { navItems } from "@/components/layout/nav-items";
+import { navItems, isNavItemActive } from "@/components/layout/nav-items";
 import { NavLink } from "@/components/layout/nav-link";
 
 export function MobileDrawer() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -33,7 +35,7 @@ export function MobileDrawer() {
         </div>
         <nav className="flex flex-1 flex-col gap-1 px-3 py-2" onClick={() => setOpen(false)}>
           {navItems.map((item) => (
-            <NavLink key={item.href} {...item} />
+            <NavLink key={item.href} isActive={isNavItemActive(pathname, item.href)} {...item} />
           ))}
         </nav>
       </DialogContent>
