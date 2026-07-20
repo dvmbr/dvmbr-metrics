@@ -121,3 +121,17 @@ Note the light-mode brand colors are deliberately *not* identical hex values to 
 Tokens are implemented as CSS custom properties in [`app/globals.css`](../app/globals.css), with `:root` holding the dark values (dark-first default) and a `.light` class override for the toggle, mapped into Tailwind v4's `@theme inline` so they're usable as ordinary utilities: `bg-background`, `text-foreground`, `bg-primary text-primary-foreground`, `border-border`, `focus-visible:ring-ring`, etc. See [`components/ui/button.tsx`](../components/ui/button.tsx) for the reference usage pattern.
 
 `primary` and `secondary` are not flat hex values in the CSS — they're composed at each theme from three parts: `oklch(var(--primary-l) var(--primary-c) var(--primary-h))`. `--primary-h`/`--secondary-h` are declared exactly once, in `:root`, and `.light` never redeclares them, so they're inherited unchanged — that's what makes the two themes' hue identical by construction rather than by two independently-tuned numbers landing close together. Only `-l` and `-c` get a second, theme-specific declaration in `.light`. Verified live: a rendered button's computed `background-color` reads `oklch(0.65 0.236 27)` in dark mode and `oklch(0.582 0.237 27)` in light mode — same hue field.
+
+## Chart marks
+
+Colors used as UI fills (buttons, badges) aren't automatically correct as chart marks (SVG lines, dots, bars) — a UI color is judged against "does it look right as a small filled shape," a chart mark is judged against measurable checks (lightness band, chroma floor, contrast vs. the chart surface) from the `dataviz` skill. Before wiring up the first Recharts chart, ran that skill's `validate_palette.js` against our actual token hexes on our actual card surfaces (`--card`), not the skill's generic reference palette:
+
+| Token as chart mark | Dark mode | Light mode |
+| --- | --- | --- |
+| `primary` | Passes unchanged | Passes unchanged |
+| `destructive` | Passes unchanged | Passes unchanged |
+| `success` / `secondary` | **Fails** the dark-mode lightness band (L=88% — correct for a neon UI fill on near-black, too light to read as chart ink) | Passes unchanged (L=53.5%, already inside the band) |
+
+For the one failure, added `--chart-success` (dark mode only; light mode aliases straight to `--success`) — same locked `--secondary-h` hue as the brand color, recalibrated `L`/`C` for the chart-mark context via the same max-in-gamut-chroma method used for the theme split above (`L=60%, C=0.170` → `#009A40`). Same brand identity, different context, same "lock the hue, recalibrate the rest" pattern — not a new, unrelated color. Used by [`components/dashboard/sparkline.tsx`](../components/dashboard/sparkline.tsx) for the current-period accent dot.
+
+`muted-foreground` also flags on the validator's chroma-floor check (it's a near-neutral gray, by design) — that check is scoped to categorical identity colors, per the validator's own output ("scope: categorical palettes only"). It doesn't apply to an intentionally de-emphasized role like a sparkline's historical trail or axis text; low chroma there is correct, not a bug to fix.

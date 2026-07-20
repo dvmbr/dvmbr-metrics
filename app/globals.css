@@ -41,6 +41,18 @@
 
   --overlay-hover: rgba(255, 255, 255, 0.06);
   --overlay-active: rgba(255, 255, 255, 0.12);
+
+  /* Chart-mark variant of --success, dark mode only — see docs/design-system.md
+     "Chart marks" section. --secondary at L=88% is correct for a UI fill on
+     near-black (that's what "neon" means), but a chart mark that light fails
+     the dataviz skill's dark-mode lightness band (0.48-0.67) and reads as
+     washed out. Same locked --secondary-h, recalibrated L/C for this context,
+     same methodology as the --primary/--secondary theme split. Light mode
+     needs no equivalent override — --success already sits at L=53.5%, inside
+     the (wider) light-mode band, verified with the validator. */
+  --chart-success-l: 60%;
+  --chart-success-c: 0.17;
+  --chart-success: oklch(var(--chart-success-l) var(--chart-success-c) var(--secondary-h));
 }
 
 .light {
@@ -79,6 +91,10 @@
 
   --overlay-hover: rgba(0, 0, 0, 0.04);
   --overlay-active: rgba(0, 0, 0, 0.08);
+
+  /* No dark-mode-style override needed here — --success already passes the
+     dataviz lightness band in light mode, verified with the validator. */
+  --chart-success: var(--success);
 }
 
 /* Motion language — see docs/motion.md. Theme-independent (same in light/dark),
@@ -125,6 +141,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-chart-success: var(--chart-success);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-destructive: var(--destructive);

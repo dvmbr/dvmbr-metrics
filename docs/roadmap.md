@@ -28,10 +28,14 @@ Build P0 pages **fully vertical** (UI → API → DB) one at a time, not all UIs
 
 ### Phase 2 — Static UI with mock data
 
-- [ ] Hand-write small mock JSON fixtures per page
-- [ ] Build `MetricCard`, `TrendBadge`, `ChartContainer` + one Recharts chart wired to mock data
-- [ ] Build `DataTable` + `Pagination` against a mock customer array
-- [ ] Confirm responsive + dark mode across all built components
+- [x] Hand-write small mock JSON fixtures per page — `lib/mock/overview.ts`: 5 KPI metrics + 12-month revenue series, hand-shaped (steady growth + one soft mid-year dip) rather than random
+- [x] Build `MetricCard`, `TrendBadge`, `ChartContainer` + one Recharts chart wired to mock data — Overview page now shows 5 KPI cards + a revenue area chart; also built `Sparkline` and the `LoadingSkeleton`/`ErrorState`/`EmptyState` primitives `ChartContainer` needed as slots
+- [x] Build `DataTable` + `Pagination` against a mock customer array — `lib/mock/customers.ts` (28 hand-built rows, field names mirroring [data-model.md](./data-model.md) so they map cleanly onto the real schema later); also built `StatusBadge` and `SortableHeader`. Sort/pagination are local `useState` for now (client-side, controlled-component API) — the exact same `onSort`/`page` props will just get backed by URL search params instead of `useState` in Phase 5, no component rewrite needed
+- [x] Confirm responsive + dark mode across all built components — verified at 1400px/375px and both themes via Playwright, plus actual sort-toggle and pagination-click interactions (not just static render); zero console errors
+
+**Phase 2 complete.** FilterBar/SearchInput (also in the original Customers page spec) intentionally deferred — they're tied to URL state, which is explicitly Phase 5's job; building them against local state now would mean rebuilding them there.
+
+**Chart colors validated, not eyeballed** — read the `dataviz` skill before writing any chart code, then ran its `validate_palette.js` against our actual design-system hexes (not the skill's generic reference palette) on our actual card surfaces. Result: `primary`/`destructive` pass as chart marks unchanged in both themes, but dark-mode `success` (L=88%, correct for a neon UI fill on near-black) fails the dataviz skill's dark-mode lightness band as a chart mark — added a dedicated `--chart-success` token (same locked hue as `--secondary`, recalibrated L/C for the chart-mark context, light mode needs no override). Documented in [design-system.md](./design-system.md).
 
 ### Phase 3 — Database
 
